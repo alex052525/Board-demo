@@ -2,6 +2,7 @@ package com.example.demo.domain.board.service;
 
 import com.example.demo.domain.board.dto.BoardAddRequest;
 import com.example.demo.domain.board.dto.BoardDetailResponse;
+import com.example.demo.domain.board.dto.BoardUpdateRequest;
 import com.example.demo.domain.board.entity.Board;
 import com.example.demo.domain.board.exception.BoardNotFoundException;
 import com.example.demo.domain.board.repository.BoardRepository;
@@ -43,8 +44,7 @@ public class BoardService {
     }
 
     public BoardDetailResponse read(Long boardId){
-//        return boardRepository.findById(boardId).orElseThrow()
-        final Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
         return BoardDetailResponse.builder()
                 .userName(board.getUser().getName())
                 .createdDate(board.getCreatedDate())
@@ -54,6 +54,21 @@ public class BoardService {
                 .build();
     }
 
+    public BoardDetailResponse update(BoardUpdateRequest boardUpdateRequest){
+        Board ModifiedBoard = boardRepository.findById(boardUpdateRequest.getBoardId())
+                .orElseThrow(BoardNotFoundException::new);
+        User loggedInuser = loadUserInfoWithUserId(boardUpdateRequest.getUserId());
+        ModifiedBoard.setTitle(boardUpdateRequest.getTitle());
+        ModifiedBoard.setContent(boardUpdateRequest.getContent());
+        boardRepository.save(ModifiedBoard);
+        return BoardDetailResponse.builder()
+                .userName(loggedInuser.getName())
+                .createdDate(ModifiedBoard.getCreatedDate())
+                .updatedDate(ModifiedBoard.getUpdatedDate())
+                .title(ModifiedBoard.getTitle())
+                .content(ModifiedBoard.getContent())
+                .build();
+    }
     private User loadUserInfoWithUserId(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }

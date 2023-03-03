@@ -29,7 +29,7 @@ public class UserController {
 
     @GetMapping("{userId}")
     public ResponseEntity<ResultResponse> getUserInfo(@PathVariable Long userId) {
-        UserInfo.RegisterResponse responses = userService.getUser(userId);
-        return ResponseEntity.ok(ResultResponse.of(USER_SEARCH_SUCCESS,responses));
+        UserInfo.RegisterResponse response = userService.getUser(userId);
+        return ResponseEntity.ok(ResultResponse.of(USER_SEARCH_SUCCESS,response));
     }
 }

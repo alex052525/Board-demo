@@ -33,4 +33,12 @@ public class Board extends BasedTimeEntity {
         this.content = content;
         this.user = user;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
 }

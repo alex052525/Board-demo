@@ -2,6 +2,7 @@ package com.example.demo.domain.board.controller;
 
 import com.example.demo.domain.board.dto.BoardAddRequest;
 import com.example.demo.domain.board.dto.BoardDetailResponse;
+import com.example.demo.domain.board.dto.BoardUpdateRequest;
 import com.example.demo.domain.board.service.BoardService;
 import com.example.demo.global.dto.ResultResponse;
 import com.example.demo.global.dto.code.ResultCode;
@@ -23,16 +24,19 @@ public class    BoardController {
 
     @PostMapping("/add")
     public ResponseEntity<ResultResponse> addBoard(@RequestBody BoardAddRequest request){
-        BoardDetailResponse responses = boardService.add(request);
+        BoardDetailResponse response = boardService.add(request);
 
-        return ResponseEntity.ok(ResultResponse.of(BOARD_CREATE_SUCCESS,responses));
+        return ResponseEntity.ok(ResultResponse.of(BOARD_CREATE_SUCCESS,response));
     }
     @GetMapping("{boardId}")
     public ResponseEntity<ResultResponse> readBoard(@PathVariable Long boardId){
-        BoardDetailResponse responses = boardService.read(boardId);
+        BoardDetailResponse response = boardService.read(boardId);
 
-        return ResponseEntity.ok(ResultResponse.of(BOARD_LIST_PAGE_SEARCH_SUCCESS,responses));
+        return ResponseEntity.ok(ResultResponse.of(BOARD_LIST_PAGE_SEARCH_SUCCESS,response));
     }
-//    @PutMapping("/update")
-//    public ResponseEntity<ResultResponse> updateBoard(@PathVariable)
+    @PutMapping("/update")
+    public ResponseEntity<ResultResponse> updateBoard(@RequestBody BoardUpdateRequest request){
+        BoardDetailResponse response = boardService.update(request);
+        return ResponseEntity.ok(ResultResponse.of(BOARD_DETAIL_UPDATE_SUCCESS,response));
+    }
 }
