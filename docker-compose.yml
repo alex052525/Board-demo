@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+
+
+  mysqldb:
+    image: mysql:latest
+    platform: linux/x86_64
+    container_name: test-mysqldb
+    env_file:
+      - "./.env"
+    command:
+      [
+        "--character-set-server=utf8mb4",
+        "--collation-server=utf8mb4_unicode_ci",
+      ]
+
+    ports:
+      - "3306:3306"
+
+
+    networks:
+      - network-tier
+
+
+networks:
+  network-tier:
+    driver: bridge
+
+volumes:
+  mysql-data:
