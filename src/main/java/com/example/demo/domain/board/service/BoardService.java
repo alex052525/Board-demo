@@ -5,6 +5,7 @@ import com.example.demo.domain.board.dto.BoardDetailResponse;
 import com.example.demo.domain.board.dto.BoardUpdateRequest;
 import com.example.demo.domain.board.entity.Board;
 import com.example.demo.domain.board.exception.BoardNotFoundException;
+import com.example.demo.domain.board.exception.CantUpdateOthersBoard;
 import com.example.demo.domain.board.repository.BoardRepository;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.domain.user.repository.UserRepository;
@@ -13,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.domain.user.exception.UserNotFoundException;
+
+import java.util.Objects;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -55,20 +59,29 @@ public class BoardService {
     }
 
     public BoardDetailResponse update(BoardUpdateRequest boardUpdateRequest){
-        Board ModifiedBoard = boardRepository.findById(boardUpdateRequest.getBoardId())
+        Board modifiedBoard = boardRepository.findById(boardUpdateRequest.getBoardId())
                 .orElseThrow(BoardNotFoundException::new);
         User loggedInuser = loadUserInfoWithUserId(boardUpdateRequest.getUserId());
-        ModifiedBoard.setTitle(boardUpdateRequest.getTitle());
-        ModifiedBoard.setContent(boardUpdateRequest.getContent());
-        boardRepository.save(ModifiedBoard);
+        checkIsWriter(boardUpdateRequest,modifiedBoard);
+
         return BoardDetailResponse.builder()
                 .userName(loggedInuser.getName())
-                .createdDate(ModifiedBoard.getCreatedDate())
-                .updatedDate(ModifiedBoard.getUpdatedDate())
-                .title(ModifiedBoard.getTitle())
-                .content(ModifiedBoard.getContent())
+                .createdDate(modifiedBoard.getCreatedDate())
+                .updatedDate(modifiedBoard.getUpdatedDate())
+                .title(modifiedBoard.getTitle())
+                .content(modifiedBoard.getContent())
                 .build();
     }
+
+    private void checkIsWriter(BoardUpdateRequest boardUpdateRequest,Board modifiedBoard) {
+        if (!Objects.equals(boardUpdateRequest.getUserId(),modifiedBoard.getUser().getId())){
+            throw new CantUpdateOthersBoard();
+        }
+        modifiedBoard.setTitle(boardUpdateRequest.getTitle());
+        modifiedBoard.setContent(boardUpdateRequest.getContent());
+        boardRepository.save(modifiedBoard);
+    }
+
     private User loadUserInfoWithUserId(Long userId) {
         return userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
     }
