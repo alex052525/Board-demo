@@ -18,12 +18,16 @@ public class User extends BasedTimeEntity {
     @Column(name="name",nullable = false)
     private String name;
 
+//    @Column(name="password",nullable = false)
+//    private String password;
+
     @Column(name="role")
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
     @Builder
     public User(String name, UserRole userRole) {
         this.name = name;
+//        this.password = password;
         this.userRole = userRole;
     }
 }

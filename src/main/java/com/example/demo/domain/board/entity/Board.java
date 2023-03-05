@@ -3,6 +3,7 @@ package com.example.demo.domain.board.entity;
 import com.example.demo.domain.user.entity.User;
 import com.example.demo.global.entity.BasedTimeEntity;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 
@@ -33,6 +34,7 @@ public class Board extends BasedTimeEntity {
         this.content = content;
         this.user = user;
     }
+
 
     public void setTitle(String title) {
         this.title = title;

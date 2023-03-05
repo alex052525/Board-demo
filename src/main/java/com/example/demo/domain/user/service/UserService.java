@@ -20,6 +20,7 @@ public class UserService {
         User user =
                 User.builder()
                         .name(requestDto.getName())
+//                        .password(requestDto.getPassword())
                         .userRole(requestDto.getUserRole())
                         .build();
         userRepository.save(user);

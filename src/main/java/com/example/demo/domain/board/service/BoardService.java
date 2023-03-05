@@ -73,6 +73,13 @@ public class BoardService {
                 .build();
     }
 
+    public void delete(Long boardId,Long userId){
+        Board board = boardRepository.findById(boardId).orElseThrow(BoardNotFoundException::new);
+        if (!Objects.equals(board.getUser().getId(),userId))
+            throw new CantUpdateOthersBoard();
+        boardRepository.deleteById(board.getId());
+    }
+
     private void checkIsWriter(BoardUpdateRequest boardUpdateRequest,Board modifiedBoard) {
         if (!Objects.equals(boardUpdateRequest.getUserId(),modifiedBoard.getUser().getId())){
             throw new CantUpdateOthersBoard();
